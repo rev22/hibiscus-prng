@@ -1,0 +1,5 @@
+scale=14000
+obase=16
+phi=(1+(e(l(5)/2)))/2
+tau=a(1)*8
+phi + tau + e(1)
