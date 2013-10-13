@@ -12,6 +12,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+ALL = test
+
+all: $(ALL)
+
+clean: tempclean
+	rm -f $(ALL) *.compiled *.compiled.*
+
+## Rules for compiling Mythryl
+
+BAEMHI=build-an-executable-mythryl-heap-image
+
+%.lib: %.pkg
+	@ [ -e "$@"~ ] && mv "$@" "$@"~; (echo LIBRARY_EXPORTS && echo && sed -n "s/^generic package \\([a-z0-9_']*\\).*/	generic \\1/p" <"$<" && sed -n "s/^package \\([a-z0-9_']*\\).*/	pkg \\1/p" <"$<" && echo && echo LIBRARY_COMPONENTS && echo && (sed -n "s/.*#  *Requires:  *\\([^ ]*\\)/\\1/p"|sed "s,standard,""$$""ROOT/src/lib/std/standard.lib,"|sed "s/^/	/") <"$<" && echo && echo "	""$<" && echo) >"$@".new
+	@ mv "$@".new "$@"
+	@ echo Built "$@"
+
+
+%: %.lib %.pkg
+	${MAKE} tempclean
+	${BAEMHI} $< main::main
+
+tempclean:
+	rm -rf .tmp-* tmp-* *.compile.log
+
+## Generation of various constants ##
+
 %.bc-value: %.bc-expr
 	bc -l <$< >.tmp.$@ && mv .tmp.$@ $@
 
