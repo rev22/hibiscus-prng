@@ -15,11 +15,10 @@
 %.bc-value: %.bc-expr
 	bc -l <$< >.tmp.$@ && mv .tmp.$@ $@
 
-hibiscus-prng-table.pkg: shaxc-constant.bc-value Makefile
+hibiscus-prng-table.pkg.in: shaxc-constant.bc-value Makefile
 	echo "package hibiscus_prng_table : api { table: Vector(Unt32) } { table = {" >.tmp.$@
 	tr -d -c ".0-9A-Fa-f" <$<|sed "s/^[^.]*[.]//"|sed -E "s/([0-9a-f]{8})/0x\\1\n/gi"|head -n512|tail -n256|tr "\\n" " "|sed 's/ 0x/, 0x/g'|fmt -w 72 >>.tmp.$@
 	echo "}; };" >>.tmp.$@
-	indent .tmp.$@
 	mv .tmp.$@ $@
 
 hibiscus-prng-seeds.pkg.in: shaxc-constant.bc-value Makefile
