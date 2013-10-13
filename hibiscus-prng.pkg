@@ -4,51 +4,71 @@
 
 # Released under the terms of Version 3 of the GNU General Public License.
 
-Unt = Unt32
-
 api Hibiscus_PRNG {
   State;
   
   origin : State;
+  inject : (State, one_word_unt::Unt) -> State;
+  extract : State -> (State, one_word_unt::Unt);
+};
 
-  inject : (State, Unt) -> State;
-
-  extract : State -> (State, Unt);
-}
+# Requires: standard
+# Requires: hibiscus-prng-constants.lib
 
 package hibiscus_prng : Hibiscus_PRNG {
+  package constants = hibiscus_prng_constants;
 
+  Unt = one_word_unt::Unt;
+  (>>) = one_word_unt::(>>);
+  x0 = the(one_word_unt::from_string("0"));
+  xff = the(one_word_unt::from_string("0xff"));
+  d8 = the(tagged_unt::from_string("8"));
+  d16 = the(tagged_unt::from_string("16"));
+  d24 = the(tagged_unt::from_string("24"));
+  (_[]) = vector::(_[]);
+  (_[]) = fn (v, i) = v[one_word_unt::to_int(i)];
+
+
+  SeedPart = (Unt, Unt, Unt, Unt);
+  Seed = (SeedPart, SeedPart, SeedPart, SeedPart, SeedPart, SeedPart);
+  
   StateHalf = (Unt, Unt, Unt, Unt, Unt, Unt);
 
   # The state is 384 bits (32 x 6 x 2)
   State = (StateHalf, StateHalf);
 
-  origin = { h = (0, 0, 0, 0, 0, 0); (h, h); };
+  origin = { h = (x0, x0, x0, x0, x0, x0); (h, h); };
 
   package internals : api {
-    round_in : State -> State
-    round_ex : State -> State
+      round_in : State -> State;
+      round_ex : State -> State;
+      t1 : Unt -> Unt;
+      t2 : Unt -> Unt;
+      t3 : Unt -> Unt;
+      t4 : Unt -> Unt;
   } {
-    table = [ ... ]; # 256 32-bit integers
-  
-    fun t1 (i : Unt) = table[ i & 0xff ];
-    fun t2 (i : Unt) = table[ (i >> 8) & 0xff ];
-    fun t3 (i : Unt) = table[ (i >> 16) & 0xff ];
-    fun t4 (i : Unt) = table[ i >> 24 ];
+    stipulate
+      table = constants::table; # 256 32-bit integers
+    herein
+      fun t1 (i : Unt) = table[ i & xff ];
+      fun t2 (i : Unt) = table[ (i >> d8) & xff ];
+      fun t3 (i : Unt) = table[ (i >> d16) & xff ];
+      fun t4 (i : Unt) = table[ i >> d24 ];
+    end;
   
     # the function uses different seeds for 'inject' and 'extract'
-    seed_in = ( ... ); # 24 32-bit integers
-    seed_ex = ( ... ); # 24 32-bit integers
+    seed_in = constants::seed_in; # 24 32-bit integers
+    seed_ex = constants::seed_ex; # 24 32-bit integers
     
-    fun round seed = fn (a, b) = {
+    fun round(seed:Seed) = fn (a : StateHalf, b : StateHalf) = {
       b = (
-        b.1 + t4(a.4) ^ seed.4.4 + t3(a.5) ^ seed.5.3 + t2(a.6) ^ seed.6.2 + t1(a.1) ^ seed.1.1,
-        b.2 + t4(a.5) ^ seed.5.4 + t3(a.6) ^ seed.6.3 + t2(a.1) ^ seed.1.2 + t1(a.2) ^ seed.2.1,
-        b.3 + t4(a.6) ^ seed.6.4 + t3(a.1) ^ seed.1.3 + t2(a.2) ^ seed.2.2 + t1(a.3) ^ seed.3.1,
-        b.4 + t4(a.1) ^ seed.1.4 + t3(a.2) ^ seed.2.3 + t2(a.3) ^ seed.3.2 + t1(a.4) ^ seed.4.1,
-        b.5 + t4(a.2) ^ seed.2.4 + t3(a.3) ^ seed.3.3 + t2(a.4) ^ seed.4.2 + t1(a.5) ^ seed.5.1,
-        b.6 + t4(a.3) ^ seed.3.4 + t3(a.4) ^ seed.4.3 + t2(a.5) ^ seed.5.2 + t1(a.6) ^ seed.6.1
-      );
+        b.1 + (t4(a.4) ^ (seed.4).4) + (t3(a.5) ^ (seed.5).3) + (t2(a.6) ^ (seed.6).2) + (t1(a.1) ^ (seed.1).1),
+        b.2 + (t4(a.5) ^ (seed.5).4) + (t3(a.6) ^ (seed.6).3) + (t2(a.1) ^ (seed.1).2) + (t1(a.2) ^ (seed.2).1),
+        b.3 + (t4(a.6) ^ (seed.6).4) + (t3(a.1) ^ (seed.1).3) + (t2(a.2) ^ (seed.2).2) + (t1(a.3) ^ (seed.3).1),
+        b.4 + (t4(a.1) ^ (seed.1).4) + (t3(a.2) ^ (seed.2).3) + (t2(a.3) ^ (seed.3).2) + (t1(a.4) ^ (seed.4).1),
+        b.5 + (t4(a.2) ^ (seed.2).4) + (t3(a.3) ^ (seed.3).3) + (t2(a.4) ^ (seed.4).2) + (t1(a.5) ^ (seed.5).1),
+        b.6 + (t4(a.3) ^ (seed.3).4) + (t3(a.4) ^ (seed.4).3) + (t2(a.5) ^ (seed.5).2) + (t1(a.6) ^ (seed.6).1)
+      ) : StateHalf;
       a = (
         a.1 ^ b.1,
         a.2 ^ b.2,
@@ -56,27 +76,27 @@ package hibiscus_prng : Hibiscus_PRNG {
         a.4 ^ b.4,
         a.5 ^ b.5,
         a.6 ^ b.6
-      );
+      ) : StateHalf;
       (a, b);
     };
     
     round_in = round seed_in;
     round_ex = round seed_ex;
-  }
+  };
   include internals;
 
-  fun inject(state, x) = round_in(
+  fun inject(state : State, x) = round_in(
     (
-      state.1.1 ^ t1(x),
-      state.1.2 ^ t2(x),
-      state.1.3 ^ t3(x),
-      state.1.4 ^ t4(x),
-      state.1.5,
-      state.1.6,
-    ), state.2)
+      (state.1).1 ^ t1(x),
+      (state.1).2 ^ t2(x),
+      (state.1).3 ^ t3(x),
+      (state.1).4 ^ t4(x),
+      (state.1).5,
+      (state.1).6
+    ), state.2);
   
   fun extract state = {
-    s = round_ex state
-    (s,  s.2.1 ^ s.2.2 ^ s.2.3 ^ s.2.4 ^ s.2.5 ^ s.2.6)
-  }
-}
+    s = round_ex state;
+    (s,  (s.2).1 ^ (s.2).2 ^ (s.2).3 ^ (s.2).4 ^ (s.2).5 ^ (s.2).6);
+  };
+};

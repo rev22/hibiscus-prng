@@ -1,0 +1,8 @@
+# Requires: hibiscus-prng-table.lib
+# Requires: hibiscus-prng-seeds.lib
+
+package hibiscus_prng_constants {
+    table = hibiscus_prng_table::table;
+    seed_in = hibiscus_prng_seeds::seed_in;
+    seed_ex = hibiscus_prng_seeds::seed_ex;
+};

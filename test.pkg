@@ -1,0 +1,24 @@
+# Requires: standard
+# Requires: hibiscus-prng.lib
+
+package main : api {
+                   main: ((String, List( String )))   ->   winix::process::Status;
+} {
+    package prng = hibiscus_prng;
+    fun main(name, args) = {
+	prng = prng::origin;
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	my (prng, x) = prng::extract(prng);
+	printf "%s\n" (one_word_unt::to_string(x));
+	winix::process::success;
+    };
+};

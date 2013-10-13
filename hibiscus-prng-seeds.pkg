@@ -1,0 +1,33 @@
+# Generated extra constants:
+
+# Requires: standard
+
+package hibiscus_prng_seeds {
+    fun x y = the(one_word_unt::from_string(y));
+
+    seed_in =
+	((x("0x736EF2CE"), x("0x085AB4EF"), x("0x2E0BB993"), x("0x19A838AE")),
+	  (x("0x2DCF50B0"), x("0x55A73588"), x("0x588BD069"), x("0xDBEBA759")),
+	  (x("0x7F72B6F3"), x("0x10F1DC12"), x("0xD249E735"), x("0xA4C72A8D")),
+	  (x("0x86C5832A"), x("0x9DC3BC06"), x("0xBAE9CB28"), x("0xCC531D89")),
+	  (x("0x1D1B788C"), x("0x9F2C48C1"), x("0xFB318AF0"), x("0xE3828C53")),
+	  (x("0xEF5CBEFE"), x("0xB9AD9399"), x("0xB959F72B"), x("0xACF918F3")));
+
+    seed_ex =
+	((x("0x513490AE"), x("0x4D534005"), x("0x2634E866"), x("0x50ADF946")),
+	  (x("0x4507359B"), x("0x0F39039C"), x("0x0DBCE762"), x("0xCF34A704")),
+	  (x("0x69FB940B"), x("0xC2751254"), x("0xDC555EEA"), x("0x6F7AAA39")),
+	  (x("0xCCAE37D6"), x("0xDFCFE95F"), x("0x7C89659E"), x("0x640DA50B")),
+	  (x("0xD30BF581"), x("0x9E6693D4"), x("0x51B164AB"), x("0xBEC53B41")),
+	  (x("0x79A21BD1"), x("0x0528D826"), x("0xCFA683AE"), x("0x595CEB8A")));
+
+# x("0xE4AF44B7"), x("0x18D9377E"), x("0x5427E215"), x("0x0ED6DF2E"),
+# x("0xD44A452F"), x("0xF7230E56"), x("0x8CA36105"), x("0x56C31A6C"),
+# x("0x77C5B236"), x("0x21BEB1B3"), x("0x65C9E254"), x("0x255BFE61"),
+# x("0xBB44EFD6"), x("0x9F3E9FDF"), x("0xAAED4689"), x("0x2D87E1BC"),
+# x("0x9ED23AF6"), x("0xAA6B43F9"), x("0x67AECE8F"), x("0x2E7EE953"),
+# x("0xA1C1F4ED"), x("0x2ED5CE46"), x("0xBDF11FBB"), x("0x512921E8"),
+# X("0x2D4FD761"), x("0xF34F56D7"), x("0x7C8ABCF1"), x("0xCB967A85"),
+# x("0x85AFF01B"), x("0xA5E8F659"), x("0xA2D51BE3"), x("0x20912E45")
+
+};

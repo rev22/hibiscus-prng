@@ -17,7 +17,7 @@ ALL = test
 all: $(ALL)
 
 clean: tempclean
-	rm -f $(ALL) *.compiled *.compiled.*
+	rm -f $(ALL) *.compiled *.compiled.* mythryl.log *.index .*.module-dependencies-summary .*.version main.log~ load-compiledfiles.c.log
 
 ## Rules for compiling Mythryl
 

@@ -1,0 +1,10 @@
+LIBRARY_EXPORTS
+
+	pkg hibiscus_prng_seeds
+
+LIBRARY_COMPONENTS
+
+	$ROOT/src/lib/std/standard.lib
+
+	hibiscus-prng-seeds.pkg
+

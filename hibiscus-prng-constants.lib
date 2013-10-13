@@ -1,0 +1,11 @@
+LIBRARY_EXPORTS
+
+	pkg hibiscus_prng_constants
+
+LIBRARY_COMPONENTS
+
+	hibiscus-prng-table.lib
+	hibiscus-prng-seeds.lib
+
+	hibiscus-prng-constants.pkg
+

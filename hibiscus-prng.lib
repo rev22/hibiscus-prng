@@ -1,0 +1,11 @@
+LIBRARY_EXPORTS
+
+	pkg hibiscus_prng
+
+LIBRARY_COMPONENTS
+
+	$ROOT/src/lib/std/standard.lib
+	hibiscus-prng-constants.lib
+
+	hibiscus-prng.pkg
+
