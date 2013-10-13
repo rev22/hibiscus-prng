@@ -15,13 +15,14 @@
 %.bc-value: %.bc-expr
 	bc -l <$< >.tmp.$@ && mv .tmp.$@ $@
 
-hibiscus-prng-table.pkg.in: shaxc-constant.bc-value Makefile
+# Discard the first 8192 bits of the fractional part, use the next 8192 for the lookup table
+hibiscus-prng-table.pkg.in: pi-tau-e.bc-value Makefile
 	echo "package hibiscus_prng_table : api { table: Vector(Unt32) } { table = {" >.tmp.$@
 	tr -d -c ".0-9A-Fa-f" <$<|sed "s/^[^.]*[.]//"|sed -E "s/([0-9a-f]{8})/0x\\1\n/gi"|head -n512|tail -n256|tr "\\n" " "|sed 's/ 0x/, 0x/g'|fmt -w 72 >>.tmp.$@
 	echo "}; };" >>.tmp.$@
 	mv .tmp.$@ $@
 
-hibiscus-prng-seeds.pkg.in: shaxc-constant.bc-value Makefile
+hibiscus-prng-seeds.pkg.in: pi-tau-e.bc-value Makefile
 	echo "# Generated extra constants:" >.tmp.$@
 	tr -d -c ".0-9A-Fa-f" <$<|sed "s/^[^.]*[.]//"|sed -E "s/([0-9a-f]{8})/0x\\1\n/gi"|head -n592|tail -n80|tr "\\n" " "|sed 's/ 0x/, 0x/g'|fmt -w 72 >>.tmp.$@
 	mv .tmp.$@ $@
